@@ -23,6 +23,7 @@ public class DCCppConnectionTypeList implements jmri.jmrix.ConnectionTypeList {
             "jmri.jmrix.dccpp.serial.ConnectionConfig",
             "jmri.jmrix.dccpp.simulator.ConnectionConfig",
             "jmri.jmrix.dccpp.network.ConnectionConfig",
+            "jmri.jmrix.dccpp.network.DCCppUDPConnectionConfig",
             "jmri.jmrix.dccpp.dccppovertcp.ConnectionConfig",
             "jmri.jmrix.dccpp.DCCppStreamConnectionConfig",
         };

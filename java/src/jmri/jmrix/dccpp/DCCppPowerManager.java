@@ -65,6 +65,13 @@ public class DCCppPowerManager extends AbstractPowerManager<DCCppSystemConnectio
     public void message(DCCppReply m) {
         if (m.isPowerReply()) {
             log.debug("Power Reply message received: {}", m);
+            // Named track replies (e.g. <p1 MAIN>, <p0 PROG>) carry per-track
+            // state.  Only the MAIN track drives the global indicator; PROG and
+            // other tracks are ignored here.  Unnamed replies (<p1>, <p0>) apply
+            // unconditionally and are used by older CS firmware and global-off.
+            if (m.isNamedPowerReply() && !"MAIN".equals(m.getValueString(2))) {
+                return;
+            }
             int old = power;
             if (m.getPowerBool()) {
                 power = ON;

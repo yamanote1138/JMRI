@@ -35,22 +35,28 @@ public abstract class PowerManagerButton extends JButton implements PropertyChan
     private NamedIcon powerUnknownIcon;
     private NamedIcon powerOffIcon;
     private NamedIcon powerOnIcon;
+    private final PowerManager fixedPowerMgr;
     private static final Logger log = LoggerFactory.getLogger(PowerManagerButton.class);
 
     public PowerManagerButton() {
-        this(true);
+        this(null, true);
     }
 
     public PowerManagerButton(Boolean fullText) {
+        this(null, fullText);
+    }
+
+    public PowerManagerButton(PowerManager pm, Boolean fullText) {
         this.fullText = fullText;
+        this.fixedPowerMgr = pm;
         this.listener = (PropertyChangeEvent evt) -> {
             this.setPowerIcons();
         };
-        PowerManager powerMgr = InstanceManager.getNullableDefault(PowerManager.class);
-        if (powerMgr == null) {
+        PowerManager effective = getEffectivePowerMgr();
+        if (effective == null) {
             log.info("No power manager instance found, panel not active");
         } else {
-            powerMgr.addPropertyChangeListener(this.listener);
+            effective.addPropertyChangeListener(this.listener);
         }
         super.addActionListener((ActionEvent e) -> {
             this.setPower();
@@ -58,8 +64,12 @@ public abstract class PowerManagerButton extends JButton implements PropertyChan
         this.initComponentsImpl();
     }
 
+    private PowerManager getEffectivePowerMgr() {
+        return fixedPowerMgr != null ? fixedPowerMgr : InstanceManager.getNullableDefault(PowerManager.class);
+    }
+
     public void dispose() {
-        PowerManager powerMgr = InstanceManager.getNullableDefault(PowerManager.class);
+        PowerManager powerMgr = getEffectivePowerMgr();
         if (powerMgr != null) {
             powerMgr.removePropertyChangeListener(this.listener);
         }
