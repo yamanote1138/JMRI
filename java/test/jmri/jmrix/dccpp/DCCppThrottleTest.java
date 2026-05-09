@@ -95,26 +95,28 @@ public class DCCppThrottleTest extends jmri.jmrix.AbstractThrottleTest {
                 "iDCC++ BASE STATION FOR ARDUINO MEGA / ARDUINO MOTOR SHIELD: BUILD 23 Feb 2015 09:23:57");
         cs.setCommandStationInfo(r);
 
+        // Modern <t CAB SPEED DIR> is emitted regardless of CS version
+        // (legacy <t REG CAB SPEED DIR> support has been dropped).
         instance.setSpeedSetting(0.5f);
         instance.setIsForward(true);
         Assert.assertEquals(instance.getSpeedSetting(), 0.5f, 0.0001);
         Assert.assertTrue(instance.getIsForward());
         lm = tc.outbound.get(tc.outbound.size()-1);
-        Assert.assertEquals( "t -1 3 63 1", lm.toString());
+        Assert.assertEquals( "t 3 63 1", lm.toString());
 
         instance.setSpeedSetting(0.0f);
         instance.setIsForward(false);
         Assert.assertEquals(instance.getSpeedSetting(), 0.0f, 0.0001);
         Assert.assertFalse(instance.getIsForward());
         lm = tc.outbound.get(tc.outbound.size()-1);
-        Assert.assertEquals( "t -1 3 0 0", lm.toString());
+        Assert.assertEquals( "t 3 0 0", lm.toString());
 
         instance.setSpeedSetting(1.0f);
         instance.setIsForward(false);
         Assert.assertEquals(instance.getSpeedSetting(), 1.0f, 0.0001);
         Assert.assertFalse(instance.getIsForward());
         lm = tc.outbound.get(tc.outbound.size()-1);
-        Assert.assertEquals( "t -1 3 126 0", lm.toString());
+        Assert.assertEquals( "t 3 126 0", lm.toString());
 
     }
 
@@ -156,6 +158,8 @@ public class DCCppThrottleTest extends jmri.jmrix.AbstractThrottleTest {
         instance.setFunction(16, false);
         Assert.assertFalse(instance.getFunction(16));
 
+        // Modern <F CAB FUNC STATE> is emitted regardless of CS version
+        // (legacy <f ADDR BYTE> support has been dropped).
         r = DCCppReply.parseDCCppReply(
                 "iDCC++ BASE STATION FOR ARDUINO MEGA / ARDUINO MOTOR SHIELD: BUILD 23 Feb 2015 09:23:57");
         cs.setCommandStationInfo(r);
@@ -163,26 +167,56 @@ public class DCCppThrottleTest extends jmri.jmrix.AbstractThrottleTest {
         instance.setFunction(0, true);
         Assert.assertTrue(instance.getFunction(0));
         lm = tc.outbound.get(tc.outbound.size()-1);
-        Assert.assertEquals( "f 3 144", lm.toString());
+        Assert.assertEquals( "F 3 0 1", lm.toString());
         instance.setFunction(0, false);
 
         instance.setFunction(21, false);
         Assert.assertFalse(instance.getFunction(21));
         lm = tc.outbound.get(tc.outbound.size()-1);
-        Assert.assertEquals( "f 3 223 0", lm.toString());
+        Assert.assertEquals( "F 3 21 0", lm.toString());
 
         instance.setFunction(4, true);
         Assert.assertTrue(instance.getFunction(4));
         lm = tc.outbound.get(tc.outbound.size()-1);
-        Assert.assertEquals( "f 3 136", lm.toString());
+        Assert.assertEquals( "F 3 4 1", lm.toString());
         instance.setFunction(4, false);
 
         instance.setFunction(28, true);
         Assert.assertTrue(instance.getFunction(28));
         lm = tc.outbound.get(tc.outbound.size()-1);
-        Assert.assertEquals( "f 3 223 128", lm.toString());
+        Assert.assertEquals( "F 3 28 1", lm.toString());
         instance.setFunction(28, false);
 
+    }
+
+    /**
+     * Verify that handleLocoState applies inbound function-bitmask updates for ALL function
+     * indices, not just F0. handleLocoState dispatches to the EDT via ThreadingUtil.runOnGUI,
+     * so calling it from a non-EDT thread (like this test) will invokeAndWait and the state
+     * is synchronously updated by the time the call returns.
+     *
+     * Regression test for the bug where F1+ broadcasts didn't reach the throttle UI.
+     */
+    @Test
+    public void testHandleLocoStateAppliesAllFunctions() {
+        DCCppThrottle t = (DCCppThrottle) instance;
+
+        // bitmask 7 = F0, F1, F2 all on; bits 3-28 off
+        DCCppReply r = DCCppReply.parseDCCppReply("l 3 0 128 7");
+        t.handleLocoState(r);
+
+        Assert.assertTrue("F0 should be on after locostate update", t.getFunction(0));
+        Assert.assertTrue("F1 should be on after locostate update", t.getFunction(1));
+        Assert.assertTrue("F2 should be on after locostate update", t.getFunction(2));
+        Assert.assertFalse("F3 should remain off",                t.getFunction(3));
+        Assert.assertFalse("F28 should remain off",               t.getFunction(28));
+
+        // Now flip F1 and F2 off via a new bitmask (1 = F0 only).
+        r = DCCppReply.parseDCCppReply("l 3 0 128 1");
+        t.handleLocoState(r);
+        Assert.assertTrue("F0 still on",  t.getFunction(0));
+        Assert.assertFalse("F1 turned off", t.getFunction(1));
+        Assert.assertFalse("F2 turned off", t.getFunction(2));
     }
 
     /**

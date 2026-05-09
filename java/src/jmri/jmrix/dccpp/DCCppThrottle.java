@@ -5,6 +5,7 @@ import jmri.DccLocoAddress;
 import jmri.LocoAddress;
 import jmri.SpeedStepMode;
 import jmri.jmrix.AbstractThrottle;
+import jmri.util.ThreadingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,15 +88,14 @@ public class DCCppThrottle extends AbstractThrottle implements DCCppListener {
      */
     @Override
     public void setFunction(int functionNum, boolean newState) {
-        if (tc.getCommandStation().isFunctionV4Supported()) {
-            //send the newer <F CAB FUNC STATE> message
-            DCCppMessage msg = DCCppMessage.makeFunctionV4Message(this.getDccAddress(), functionNum, newState);
-            queueMessage(msg, THROTTLEIDLE);
-            updateFunction(functionNum, newState); //update throttle and broadcast change
-        } else {
-            //or send the older <f ADDR BYTE1 (BYTE2)> message
-            super.setFunction(functionNum, newState);
+        if (functionNum < 0 || functionNum > getFunctions().length - 1) {
+            log.warn("Unhandled set function number: {} {}", functionNum, this.getClass().getName());
+            return;
         }
+        // DCC-EX 4.0+ <F CAB FUNC STATE>; legacy <f ADDR BYTE> is not emitted.
+        DCCppMessage msg = DCCppMessage.makeFunctionV4Message(this.getDccAddress(), functionNum, newState);
+        queueMessage(msg, THROTTLEIDLE);
+        updateFunction(functionNum, newState);
     }
 
    
@@ -189,24 +189,11 @@ public class DCCppThrottle extends AbstractThrottle implements DCCppListener {
             if (speed > 1) {
                 speed = (float) 1.0;
             }
-            /* we're sending a speed to the locomotive */
-            DCCppMessage msg;
-            //older version includes register
-            if (tc.getCommandStation().isThrottleRegisterRequired()) {
-                msg = DCCppMessage.makeSpeedAndDirectionMsg(
-                getRegisterNum(),
+            // DCC-EX 4.0+ <t CAB SPEED DIR>; legacy 4-arg <t REG CAB SPEED DIR> is not emitted.
+            DCCppMessage msg = DCCppMessage.makeSpeedAndDirectionMsg(
                 getDccAddress(),
                 speed,
                 this.isForward);
-            } else {
-                //newer version does not need register passed
-                msg = DCCppMessage.makeSpeedAndDirectionMsg(
-                getDccAddress(),
-                speed,
-                this.isForward);               
-            }
-            // now, queue the message for sending to the command station
-            //queueMessage(msg, THROTTLESPEEDSENT);
             queueMessage(msg, THROTTLEIDLE);
         }
     }
@@ -323,7 +310,7 @@ public class DCCppThrottle extends AbstractThrottle implements DCCppListener {
     //then make those changes directly to the parent throttle to avoid a message loop
     protected void handleLocoState(DCCppReply r) {
         int locoId = r.getLocoIdInt();
-        //insure this message belongs to this throttle (really shouldn't happen)        
+        //insure this message belongs to this throttle (really shouldn't happen)
         if (this.address != locoId) {
             log.error("throttle {} incorrectly called for locoId {}", this.address, locoId);
             return;
@@ -332,7 +319,15 @@ public class DCCppThrottle extends AbstractThrottle implements DCCppListener {
         boolean newForward = r.getIsForward();
         float newSpeedSetting = r.getSpeedInt() * speedMultiplier;
         String newFunctionsString = r.getFunctionsString();
-        
+
+        // Marshal to the EDT: handleLocoState runs on the receive thread, but
+        // updateFunction/setSpeedSetting fire PropertyChangeEvents that drive
+        // Swing components in the throttle UI. Off-EDT firing produced lost
+        // updates for F1+ on Linux/X11.
+        ThreadingUtil.runOnGUI(() -> applyLocoState(locoId, newForward, newSpeedSetting, newFunctionsString));
+    }
+
+    private void applyLocoState(int locoId, boolean newForward, float newSpeedSetting, String newFunctionsString) {
         if (this.getIsForward() != newForward) {
             if (log.isDebugEnabled()) log.debug("changing forward from {} to {} for {}", this.getIsForward(), newForward, locoId);
             super.setIsForward(newForward);
@@ -343,11 +338,10 @@ public class DCCppThrottle extends AbstractThrottle implements DCCppListener {
         }
         //check each function value for any changes, and update if so
         for (int i = 0; i <= 28; i++) {
-            boolean newState = (newFunctionsString.charAt(i)=='1');
+            boolean newState = (newFunctionsString.charAt(i) == '1');
             if (this.getFunction(i) != newState) {
-//                log.debug(r.toMonitorString());
-                if (log.isDebugEnabled()) log.debug("changing F{} from {} to {} for {}", i, this.getFunction(i), newState, locoId);                
-                super.updateFunction(i,newState);
+                if (log.isDebugEnabled()) log.debug("changing F{} from {} to {} for {}", i, this.getFunction(i), newState, locoId);
+                super.updateFunction(i, newState);
             }
         }
     }
