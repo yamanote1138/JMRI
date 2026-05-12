@@ -276,7 +276,7 @@
 
       <h2 id="tools">JMRI DCC++ Tools</h2>
       <img src="images/DCCppMenu416.png" width="138" height="70" class="floatRight" alt="menu">
-      <p>The DCC++ menu contains 5 tools:</p>
+      <p>The DCC++ menu contains 6 tools:</p>
 
       <ul>
         <li>DCC++ Traffic Monitor</li>
@@ -288,6 +288,10 @@
         <li>Configure Sensors and Turnouts</li>
 
         <li>Load DCC++ over TCP Server</li>
+
+        <li>DCC-EX Virtual LCD &mdash; mirrors the command station's OLED text in a JMRI window. The
+        Options menu chooses a Screen size preset (LCD 16x2, LCD 20x4, OLED 22x4, OLED 22x8 default,
+        or custom rows/cols) and a Font size preset (50% / 100% / 200% / 300%).</li>
       </ul>
       <img src="images/DCCppGeneratePack.png" width="117" height="47" alt="generate packet">
       <img src="images/DCCppTrackCurrent.png" width="89" height="43" alt="track current"> <img src=

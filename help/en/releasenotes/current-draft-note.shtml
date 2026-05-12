@@ -36,7 +36,9 @@
 
         <h4>DCC++ and DCC-EX</h4>
             <ul>
-                <li></li>
+                <li>DCC-EX Virtual LCD: closer-to-OLED appearance (cyan-blue on black, fixed-width grid,
+                    edge padding) and an Options menu for Screen size and Font size with common presets
+                    plus a custom-dimensions dialog. Window is fixed-size and centered on open.</li>
             </ul>
 
         <h4>DCC4pc</h4>
