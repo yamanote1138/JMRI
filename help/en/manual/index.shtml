@@ -208,7 +208,19 @@
   <div style="display: flex; padding-top: 64px; min-height: calc(100vh - 64px);">
     <!--#include virtual="Sidebar.shtml" -->
     <main style="flex: 1; min-width: 0; padding: 32px 24px 48px;">
-      <h1 id="Top">JMRI&reg; Manuals</h1>
+      <!-- Purple hero -->
+      <div style="background: linear-gradient(135deg, #554FA0 0%, #3c3880 100%); border-radius: 12px; padding: 32px 36px; margin-bottom: 28px;">
+        <h1 style="color: white; font-size: 1.75rem; font-weight: 800; margin: 0 0 10px; line-height: 1.2; border: none; text-align: left;">JMRI&reg; Manuals</h1>
+        <p style="color: rgba(255,255,255,0.88); font-size: 0.88rem; margin: 0 0 20px; line-height: 1.65; max-width: 480px;">
+          Documentation for all JMRI applications and tools — current release and legacy versions.
+        </p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <a href="/help/en/html/apps/DecoderPro/Tour.shtml"
+             style="border: 1.5px solid rgba(255,255,255,0.55); color: white; font-size: 0.78rem; padding: 6px 16px; border-radius: 8px; text-decoration: none; font-weight: 500; background: rgba(255,255,255,0.1);">DecoderPro tour &rarr;</a>
+          <a href="/help/en/html/apps/index.shtml"
+             style="background: #FFD700; color: #3c3880; font-size: 0.78rem; padding: 6px 16px; border-radius: 8px; text-decoration: none; font-weight: 700;">All applications</a>
+        </div>
+      </div>
 
       <table>
         <tbody>
