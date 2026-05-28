@@ -3,7 +3,204 @@
 <head>
   <meta name="generator" content="HTML Tidy for HTML5 for Apple macOS version 5.8.0">
   <title>JMRI Manual: Index</title>
-  <!--#include virtual="/help/en/parts/Style.shtml" -->
+  <meta name="author" content="Bob Jacobsen">
+  <meta name="keywords" content="java model railroad JMRI manual documentation decoderpro panelpro">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="icon" href="/images/jmri.ico" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/help.js"></script>
+  <style>
+    /* Base */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; font-family: Verdana, sans-serif; font-size: 90%; color: #1e293b; }
+    a:link { color: #554FA0; }
+    a:visited { color: #090051; }
+    a:hover { color: #7b74c8; }
+    .skipLink { position: absolute; left: -999px; width: 990px; }
+
+    /* Fixed nav bar — styles Header.shtml's markup */
+    #mainNav {
+      background: #554FA0;
+      color: white;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      height: 64px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      overflow: visible;
+    }
+    .button {
+      color: white;
+      background: transparent;
+      border: none;
+      padding: 8px 14px;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      font-family: inherit;
+      font-size: 0.85rem;
+      vertical-align: middle;
+    }
+    #mainNav a:link, #mainNav a:visited { color: white; text-decoration: none; }
+    .button:hover { background: rgba(255,255,255,0.12); border-radius: 6px; }
+    .inline { display: inline-flex; align-items: center; }
+    .xlarge { font-size: 1.3rem; }
+    #mainNav .floatRight { margin-left: auto; }
+    .dropdown { position: relative; }
+    .dropdown-content {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #3c3880;
+      min-width: 170px;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.3);
+      border-radius: 0 0 8px 8px;
+    }
+    .dropdown-menuitem {
+      display: block;
+      padding: 9px 16px;
+      color: white;
+      text-decoration: none;
+      white-space: nowrap;
+      font-size: 0.82rem;
+    }
+    .dropdown-menuitem:hover { background: rgba(255,255,255,0.12); }
+    @media (max-width: 1024px) { #hor-nav { display: none; } }
+    @media (min-width: 1025px) { #drop-nav, #show-side { display: none; } }
+
+    /* Sidebar — matches homepage and Acknowledgements page */
+    #side {
+      position: sticky;
+      top: 64px;
+      width: 220px;
+      flex-shrink: 0;
+      align-self: flex-start;
+      max-height: calc(100vh - 64px);
+      overflow-y: auto;
+      background: #fff;
+      border-right: 1px solid rgba(119,136,153,0.15);
+      box-shadow: 2px 0 12px rgba(0,0,0,0.04);
+      padding: 0 0 2rem 0;
+    }
+    #side > div[style*="text-align: center"],
+    #side > div#manual {
+      background: #554FA0;
+      color: white !important;
+      font-weight: 600;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.65rem 1rem;
+      margin: 0;
+    }
+    #side dl { padding: 0.25rem 0.75rem 0 0.75rem; margin: 0; }
+    #side dt {
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin: 0.65rem 0 0.1rem 0;
+      padding: 0;
+      color: #554FA0;
+      border: none;
+    }
+    #side dt a, #side dt a:visited { color: #554FA0 !important; font-weight: 700; }
+    #side dd {
+      font-size: 0.72rem;
+      color: #555;
+      line-height: 1.45;
+      margin: 0 0 0.35rem 0;
+      padding: 0 0 0.45rem 0;
+      border-bottom: 1px solid rgba(119,136,153,0.1);
+    }
+    #side dd a, #side dd a:visited { color: #554FA0 !important; font-weight: normal; }
+    #side h3 {
+      font-size: 0.72rem !important;
+      font-weight: 700 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #778899 !important;
+      padding: 0.85rem 0.75rem 0.25rem 0.75rem !important;
+      margin: 0 !important;
+      border: none !important;
+      background: none;
+    }
+    #side h4 {
+      font-size: 0.72rem !important;
+      color: #778899 !important;
+      font-weight: 600 !important;
+      padding: 0.35rem 0 0.1rem 0.4rem !important;
+      margin: 0 !important;
+      border: none !important;
+    }
+    #side ul { padding: 0 0 0 0.4rem; margin: 0; }
+    #side li { font-size: 0.74rem; padding: 0.12rem 0 0.12rem 0.3rem; border: none; color: #444; list-style: none; }
+    #side li a, #side li a:visited { color: #554FA0 !important; font-weight: normal; }
+    #side p { font-size: 0.72rem; color: #555; margin: 0.1rem 0 0.25rem 0; line-height: 1.4; }
+
+    /* Manual content styles */
+    .section-head {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #778899;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 28px 0 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .manual-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .manual-card {
+      display: block;
+      padding: 14px 16px;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #554FA0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: inherit;
+      background: #fff;
+    }
+    .manual-card:hover { box-shadow: 0 2px 12px rgba(85,79,160,0.12); border-left-color: #3c3880; }
+    .manual-card:visited { color: inherit; }
+    .manual-card-name { font-weight: 700; color: #554FA0; font-size: 0.88rem; }
+    .manual-card-ver { font-size: 0.7rem; color: #778899; margin-top: 3px; }
+    .legacy-group { margin-bottom: 18px; }
+    .legacy-ver {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #778899;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .legacy-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .legacy-link {
+      font-size: 0.78rem;
+      color: #554FA0;
+      text-decoration: none;
+      padding: 4px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      background: #fff;
+    }
+    .legacy-link:hover { background: #f1f0fa; }
+    .legacy-link:visited { color: #090051; }
+    .step-diagram { float: right; margin: 0 0 16px 20px; max-width: 280px; border-radius: 8px; }
+    @media (max-width: 600px) { .step-diagram { float: none; max-width: 100%; margin: 0 0 12px 0; } }
+    .req-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 8px; }
+    .req-table th { background: #f1f0fa; color: #554FA0; font-weight: 700; padding: 6px 10px; text-align: left; border: 1px solid #e2e8f0; }
+    .req-table td { padding: 5px 10px; border: 1px solid #e2e8f0; color: #374151; }
+    .req-table tr:nth-child(even) td { background: #fafafa; }
+  </style>
 </head>
 
 <body>
