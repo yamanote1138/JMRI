@@ -299,20 +299,26 @@
       </p>
       <div style="clear: both;"></div>
 
-      <h2>System Requirements</h2>
-
-      <p>JMRI&reg; requires that Java be installed, whether your computer is <a href=
-      "https://jmri.org/install/MacOSX.shtml">macOS</a>, <a href=
-      "https://jmri.org/install/WindowsNew.shtml">Windows</a>, or <a href=
-      "https://jmri.org/install/Linux.shtml">Linux</a> based.</p>
-
-      <p>Version 2.12 can run on any computer system that will run Java 1.5 or later.<br>
-      Version 2.14.1 requires Java 1.5 (or 1.6 if you wish for drag & drop)<br>
-      Version 3.10.1 requires Java 1.7 or later.<br>
-      Version 4.2 - 4.27 requires Java 1.8.<br>
-      Version 4.99 and up requires Java 11.</p>
-
-      <p>More on our <a href="/java/index.shtml">Java installer page</a>.</p>
+      <p class="section-head">System requirements</p>
+      <p style="font-size: 0.82rem; color: #374151; line-height: 1.7; margin-bottom: 10px;">
+        JMRI requires Java on
+        <a href="https://jmri.org/install/MacOSX.shtml">macOS</a>,
+        <a href="https://jmri.org/install/WindowsNew.shtml">Windows</a>, or
+        <a href="https://jmri.org/install/Linux.shtml">Linux</a>.
+        See the <a href="/java/index.shtml">Java installer page</a> for details.
+      </p>
+      <table class="req-table">
+        <thead>
+          <tr><th>JMRI version</th><th>Java required</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2.12</td><td>Java 1.5+</td></tr>
+          <tr><td>2.14.1</td><td>Java 1.5+ (1.6 for drag &amp; drop)</td></tr>
+          <tr><td>3.10.1</td><td>Java 1.7+</td></tr>
+          <tr><td>4.2 &ndash; 4.27</td><td>Java 1.8</td></tr>
+          <tr><td>4.99+ (current)</td><td>Java 11</td></tr>
+        </tbody>
+      </table>
 
       <!--#include virtual="/help/en/parts/Footer.shtml" -->
     </main>
