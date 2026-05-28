@@ -79,18 +79,18 @@
     <!--#include virtual="AcknowledgementsSidebar.shtml" -->
 
     <div id="mainContent">
-      <!-- Hero -->
-      <div class="bg-gradient-to-br from-[#554FA0] to-[#3c3880] rounded-xl p-6 mb-4">
-        <h1 class="!text-xl !font-bold !text-white !m-0 !p-0 !border-0 !leading-snug">Acknowledgements</h1>
-        <p class="!text-purple-200 text-xs !mt-2 !mb-0 leading-relaxed">
+      <!-- Page header -->
+      <div style="border-bottom: 3px solid #554FA0; padding-bottom: 12px; margin-bottom: 12px;">
+        <h1 style="color: #554FA0; font-size: 1.5rem; font-weight: 800; margin: 0 0 6px 0; padding: 0; border: none; line-height: 1.2;">Acknowledgements</h1>
+        <p style="color: #374151; font-size: 0.82rem; margin: 0 0 10px 0; line-height: 1.6;">
           A record of everyone who's given their time to JMRI — code, testing, documentation,
           translations, and more. Listed alphabetically. Every name here deserves our thanks.
         </p>
-        <div class="flex gap-2 mt-3 flex-wrap">
+        <div class="flex gap-2 flex-wrap">
           <a href="https://www.jmri.org/Copyright.html"
-             class="bg-white/15 border border-white/30 !text-white text-xs px-3 py-1 rounded-lg !no-underline !font-medium">Copyright &amp; licensing &rarr;</a>
+             style="border: 1px solid #554FA0; color: #554FA0; font-size: 0.75rem; padding: 3px 12px; border-radius: 6px; text-decoration: none; font-weight: 500;">Copyright &amp; licensing &rarr;</a>
           <a href="https://www.jmri.org/donations.shtml"
-             class="bg-[#FFD700] !text-[#3c3880] text-xs px-3 py-1 rounded-lg !no-underline !font-bold">Make a donation</a>
+             style="background: #FFD700; color: #3c3880; font-size: 0.75rem; padding: 3px 12px; border-radius: 6px; text-decoration: none; font-weight: 700;">Make a donation</a>
         </div>
       </div>
 
