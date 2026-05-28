@@ -266,35 +266,20 @@
 
       <p class="section-head">JMRI&reg; Applications</p>
 
-      <p><strong>JMRI is a Java-based cross-platform program suite for model
-      railroaders.</strong><br>
-      It contains <a href="../html/apps/index.shtml">modular applications</a> for:</p>
-
-      <ul>
-        <li>Programming of Digital Command Control (DCC) decoders (<a href=
-        "../html/apps/DecoderPro/index.shtml">DecoderPro&reg;</a>)
-        </li>
-
-        <li>Drawing computer based panels for depicting a model railroad layout (<a href=
-        "../html/apps/PanelPro/index.shtml">PanelPro&trade;</a> and <a href=
-        "../html/apps/PanelPro/index.shtml#le">Layout Editor</a>)
-        </li>
-
-        <li>Controlling the layout (All modules)</li>
-
-        <li>Creating train manifests for duplicating railroad operations (<a href=
-        "../package/jmri/jmrit/operations/Operations.shtml">OperationsPro&trade;</a>)
-        </li>
-
-        <li>Controlling the signals on the layout (All modules)</li>
-
-        <li>Controlling lighting and sound in the room, and so forth (<a href=
-        "../html/tools/Audio.shtml">SoundPro&trade;</a>)
-        </li>
+      <p style="font-size: 0.85rem; color: #374151; line-height: 1.7; margin-bottom: 8px;">
+        JMRI is a Java-based cross-platform suite for model railroaders, containing
+        <a href="../html/apps/index.shtml">modular applications</a> for:
+      </p>
+      <ul style="font-size: 0.82rem; color: #374151; line-height: 1.7; margin: 0 0 12px 0; padding-left: 1.4rem;">
+        <li>Programming DCC decoders &mdash; <a href="../html/apps/DecoderPro/index.shtml">DecoderPro&reg;</a></li>
+        <li>Drawing control panels &mdash; <a href="../html/apps/PanelPro/index.shtml">PanelPro&trade;</a> and <a href="../html/apps/PanelPro/index.shtml#le">Layout Editor</a></li>
+        <li>Creating train manifests &mdash; <a href="../package/jmri/jmrit/operations/Operations.shtml">OperationsPro&trade;</a></li>
+        <li>Dispatching trains &mdash; <a href="../package/jmri/jmrit/dispatcher/Dispatcher.shtml">DispatcherPro&trade;</a></li>
+        <li>Controlling layout signals and lighting &mdash; <a href="../html/tools/Audio.shtml">SoundPro&trade;</a></li>
       </ul>
-
-      <p>All this capability is contained in one <a href=
-      "https://jmri.org/download/index.shtml">install</a>.</p>
+      <p style="font-size: 0.82rem; color: #374151; margin-bottom: 20px;">
+        All in one <a href="https://jmri.org/download/index.shtml">download</a>.
+      </p>
 
       <h2>Take it Step by Step</h2>
       <!-- image by Egbert Broerse @silverailscolo 2018 -->
