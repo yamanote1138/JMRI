@@ -137,23 +137,45 @@
       color: #554FA0;
     }
     .pill:hover, .pill.active { background: #554FA0; color: white; }
+
+    /* Sidebar — overrides the fixed-position from default.css (not loaded here) */
+    #side {
+      position: sticky;
+      top: 64px;
+      width: 220px;
+      flex-shrink: 0;
+      background: #F5F5DC;
+      padding: 10px 10px 24px;
+      overflow-y: auto;
+      max-height: calc(100vh - 64px);
+      align-self: flex-start;
+      font-size: 0.78rem;
+      color: #374151;
+    }
+    #side dt { font-weight: bold; color: #554FA0; margin: 10px 0 3px; }
+    #side dd { margin: 0 0 6px 8px; }
+    #side a:link, #side a:visited { color: #554FA0; }
+    #side ul { padding: 0; margin: 0; list-style: none; }
+    #side li { padding: 2px 0 2px 6px; }
   </style>
 </head>
 <body>
   <!--#include virtual="/help/en/parts/Header.shtml" -->
-  <main style="max-width: 860px; margin: 0 auto; padding: 80px 24px 48px;">
-      <!-- Page header -->
-      <div style="border-bottom: 3px solid #554FA0; padding-bottom: 12px; margin-bottom: 12px;">
-        <h1 style="color: #554FA0; font-size: 1.5rem; font-weight: 800; margin: 0 0 6px 0; padding: 0; border: none; line-height: 1.2;">Acknowledgements</h1>
-        <p style="color: #374151; font-size: 0.82rem; margin: 0 0 10px 0; line-height: 1.6;">
+  <div style="display: flex; padding-top: 64px; min-height: calc(100vh - 64px);">
+    <!--#include virtual="AcknowledgementsSidebar.shtml" -->
+    <main style="flex: 1; min-width: 0; padding: 32px 24px 48px;">
+      <!-- Purple hero -->
+      <div style="background: linear-gradient(135deg, #554FA0 0%, #3c3880 100%); border-radius: 12px; padding: 32px 36px; margin-bottom: 24px;">
+        <h1 style="color: white; font-size: 1.75rem; font-weight: 800; margin: 0 0 10px; line-height: 1.2; border: none; text-align: left;">Acknowledgements</h1>
+        <p style="color: rgba(255,255,255,0.88); font-size: 0.88rem; margin: 0 0 20px; line-height: 1.65; max-width: 480px;">
           A record of everyone who's given their time to JMRI — code, testing, documentation,
-          translations, and more. Listed alphabetically. Every name here deserves our thanks.
+          translations, and more. Every name here deserves our thanks.
         </p>
-        <div class="flex gap-2 flex-wrap">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <a href="https://www.jmri.org/Copyright.html"
-             style="border: 1px solid #554FA0; color: #554FA0; font-size: 0.75rem; padding: 3px 12px; border-radius: 6px; text-decoration: none; font-weight: 500;">Copyright &amp; licensing &rarr;</a>
+             style="border: 1.5px solid rgba(255,255,255,0.55); color: white; font-size: 0.78rem; padding: 6px 16px; border-radius: 8px; text-decoration: none; font-weight: 500; background: rgba(255,255,255,0.1);">Copyright &amp; licensing &rarr;</a>
           <a href="https://www.jmri.org/donations.shtml"
-             style="background: #FFD700; color: #3c3880; font-size: 0.75rem; padding: 3px 12px; border-radius: 6px; text-decoration: none; font-weight: 700;">Make a donation</a>
+             style="background: #FFD700; color: #3c3880; font-size: 0.78rem; padding: 6px 16px; border-radius: 8px; text-decoration: none; font-weight: 700;">Make a donation</a>
         </div>
       </div>
 
@@ -1730,7 +1752,8 @@
       and make changes to the files that make up a project. More information is available on the
       <a href="https://www.jmri.org/community/visuals/codeswarm.shtml">Code Swarm</a> page.</p>
       </div>
-  </main>
+    </main>
+  </div>
   <!--#include virtual="/help/en/parts/Footer.shtml" -->
 </body>
 </html>
