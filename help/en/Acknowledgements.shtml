@@ -79,26 +79,25 @@
     <!--#include virtual="AcknowledgementsSidebar.shtml" -->
 
     <div id="mainContent">
-      <h2>Acknowledgements: People who've contributed to JMRI</h2>
+      <!-- Hero -->
+      <div class="bg-gradient-to-br from-[#554FA0] to-[#3c3880] rounded-xl p-6 mb-0 -mt-5 -mx-2">
+        <h1 class="!text-xl !font-bold !text-white !m-0 !p-0 !border-0 !leading-snug">Acknowledgements</h1>
+        <p class="!text-purple-200 text-xs !mt-2 !mb-0 leading-relaxed">
+          A record of everyone who's given their time to JMRI — code, testing, documentation,
+          translations, and more. Listed alphabetically. Every name here deserves our thanks.
+        </p>
+        <div class="flex gap-2 mt-3 flex-wrap">
+          <a href="https://www.jmri.org/Copyright.html"
+             class="bg-white/15 border border-white/30 !text-white text-xs px-3 py-1 rounded-lg !no-underline !font-medium">Copyright &amp; licensing &rarr;</a>
+          <a href="https://www.jmri.org/donations.shtml"
+             class="bg-[#FFD700] !text-[#3c3880] text-xs px-3 py-1 rounded-lg !no-underline !font-bold">Make a donation</a>
+        </div>
+      </div>
 
-      <p>A number of people have contributed their effort to JMRI. They are listed below in
-      alphabetical order and deserve our thanks.<br>
-      See the <a href="https://www.jmri.org/Copyright.html">JMRI copyright and licensing page</a> for
-      the terms under which they make their work available to others.</p>
-
-      <p>In addition, a large number of people have donated to the project. For more information,
-      or to donate, please see <a href="https://www.jmri.org/donations.shtml">our donations
-      page</a>.</p>
-
-      <p><a href="#A">A</a>|<a href="#B">B</a>|<a href="#C">C</a>|<a href="#D">D</a>|<a href=
-      "#E">E</a>|<a href="#F">F</a>|<a href="#G">G</a>|<wbr><a href="#H">H</a>|<a href=
-      "#I">I</a>|<a href="#J">J</a>|<a href="#K">K</a>|<a href="#L">L</a>|<a href=
-      "#M">M</a>|<a href="#N">N</a>|<wbr><a href="#O">O</a>|<a href="#P">P</a>|<a href=
-      "#Q">Q</a>|<a href="#R">R</a>|<a href="#S">S</a>|<a href="#T">T</a>|<wbr><a href=
-      "#U">U</a>|<a href="#V">V</a>|<a href="#W">W</a>|<a href="#X">X</a>|<a href=
-      "#Y">Y</a>|<a href="#Z">Z</a></p>
-
-      <ul>
+      <!-- Sticky A–Z pill nav -->
+      <div class="pill-nav-bar">
+        <a class="pill" href="#A">A</a><a class="pill" href="#B">B</a><a class="pill" href="#C">C</a><a class="pill" href="#D">D</a><a class="pill" href="#E">E</a><a class="pill" href="#F">F</a><a class="pill" href="#G">G</a><a class="pill" href="#H">H</a><a class="pill" href="#I">I</a><a class="pill" href="#J">J</a><a class="pill" href="#K">K</a><a class="pill" href="#L">L</a><a class="pill" href="#M">M</a><a class="pill" href="#N">N</a><a class="pill" href="#O">O</a><a class="pill" href="#P">P</a><a class="pill" href="#Q">Q</a><a class="pill" href="#R">R</a><a class="pill" href="#S">S</a><a class="pill" href="#T">T</a><a class="pill" href="#U">U</a><a class="pill" href="#V">V</a><a class="pill" href="#W">W</a><a class="pill" href="#X">X</a><a class="pill" href="#Y">Y</a><a class="pill" href="#Z">Z</a>
+      </div>
         <li style="list-style: none">
           <a id="A"></a>
         </li>
