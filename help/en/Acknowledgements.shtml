@@ -138,25 +138,72 @@
     }
     .pill:hover, .pill.active { background: #554FA0; color: white; }
 
-    /* Sidebar — overrides the fixed-position from default.css (not loaded here) */
+    /* Sidebar — matches homepage #side overrides */
     #side {
       position: sticky;
       top: 64px;
       width: 220px;
       flex-shrink: 0;
-      background: #F5F5DC;
-      padding: 10px 10px 24px;
-      overflow-y: auto;
-      max-height: calc(100vh - 64px);
       align-self: flex-start;
-      font-size: 0.78rem;
-      color: #374151;
+      max-height: calc(100vh - 64px);
+      overflow-y: auto;
+      background: #fff;
+      border-right: 1px solid rgba(119,136,153,0.15);
+      box-shadow: 2px 0 12px rgba(0,0,0,0.04);
+      padding: 0 0 2rem 0;
     }
-    #side dt { font-weight: bold; color: #554FA0; margin: 10px 0 3px; }
-    #side dd { margin: 0 0 6px 8px; }
-    #side a:link, #side a:visited { color: #554FA0; }
-    #side ul { padding: 0; margin: 0; list-style: none; }
-    #side li { padding: 2px 0 2px 6px; }
+    #side > div[style*="text-align: center"] {
+      background: #554FA0;
+      color: white !important;
+      font-weight: 600;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.65rem 1rem;
+      margin: 0;
+    }
+    #side dl { padding: 0.25rem 0.75rem 0 0.75rem; margin: 0; }
+    #side dt {
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin: 0.65rem 0 0.1rem 0;
+      padding: 0;
+      color: #554FA0;
+      border: none;
+    }
+    #side dt a, #side dt a:visited { color: #554FA0 !important; font-weight: 700; }
+    #side dd {
+      font-size: 0.72rem;
+      color: #555;
+      line-height: 1.45;
+      margin: 0 0 0.35rem 0;
+      padding: 0 0 0.45rem 0;
+      border-bottom: 1px solid rgba(119,136,153,0.1);
+    }
+    #side dd a, #side dd a:visited { color: #554FA0 !important; font-weight: normal; }
+    #side h3 {
+      font-size: 0.72rem !important;
+      font-weight: 700 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #778899 !important;
+      padding: 0.85rem 0.75rem 0.25rem 0.75rem !important;
+      margin: 0 !important;
+      border: none !important;
+      background: none;
+    }
+    #side h4 {
+      font-size: 0.72rem !important;
+      color: #778899 !important;
+      font-weight: 600 !important;
+      padding: 0.35rem 0 0.1rem 0.4rem !important;
+      margin: 0 !important;
+      border: none !important;
+    }
+    #side ul { padding: 0 0 0 0.4rem; margin: 0; }
+    #side li { font-size: 0.74rem; padding: 0.12rem 0 0.12rem 0.3rem; border: none; color: #444; list-style: none; }
+    #side li a, #side li a:visited { color: #554FA0 !important; font-weight: normal; }
+    #side p { font-size: 0.72rem; color: #555; margin: 0.1rem 0 0.25rem 0; line-height: 1.4; }
   </style>
 </head>
 <body>
