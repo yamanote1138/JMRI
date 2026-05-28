@@ -5,9 +5,76 @@
   <title>JMRI: Acknowledgements</title>
   <meta name="author" content="Bob Jacobsen">
   <meta name="keywords" content="java model railroad JMRI decoderpro panelpro names people credits">
-  <!--#include virtual="/help/en/parts/Style.shtml" -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="icon" href="/images/jmri.ico" type="image/png">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/help.js"></script>
   <style>
+    /* Base */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; font-family: Verdana, sans-serif; font-size: 90%; color: #1e293b; }
+    a:link { color: #554FA0; }
+    a:visited { color: #090051; }
+    a:hover { color: #7b74c8; }
+    .skipLink { position: absolute; left: -999px; width: 990px; }
+
+    /* Fixed nav bar — styles Header.shtml's markup */
+    #mainNav {
+      background: #554FA0;
+      color: white;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      height: 64px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      overflow: visible;
+    }
+    .button {
+      color: white;
+      background: transparent;
+      border: none;
+      padding: 8px 14px;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      font-family: inherit;
+      font-size: 0.85rem;
+      vertical-align: middle;
+    }
+    #mainNav a:link, #mainNav a:visited { color: white; text-decoration: none; }
+    .button:hover { background: rgba(255,255,255,0.12); border-radius: 6px; }
+    .inline { display: inline-flex; align-items: center; }
+    .xlarge { font-size: 1.3rem; }
+    #mainNav .floatRight { margin-left: auto; }
+    .dropdown { position: relative; }
+    .dropdown-content {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #3c3880;
+      min-width: 170px;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.3);
+      border-radius: 0 0 8px 8px;
+    }
+    .dropdown-menuitem {
+      display: block;
+      padding: 9px 16px;
+      color: white;
+      text-decoration: none;
+      white-space: nowrap;
+      font-size: 0.82rem;
+    }
+    .dropdown-menuitem:hover { background: rgba(255,255,255,0.12); }
+    @media (max-width: 1024px) { #hor-nav { display: none; } }
+    @media (min-width: 1025px) { #drop-nav, #show-side { display: none; } }
+
+    /* Contributor list */
     .contrib-row {
       display: grid;
       grid-template-columns: 160px 1fr;
@@ -48,7 +115,7 @@
     }
     .pill-nav-bar {
       position: sticky;
-      top: 0;
+      top: 64px;
       background: white;
       border-bottom: 1px solid #e2e8f0;
       box-shadow: 0 2px 6px rgba(0,0,0,.06);
@@ -56,8 +123,8 @@
       gap: 3px;
       flex-wrap: wrap;
       z-index: 10;
-      margin: 0 0 12px 0;
-      padding: 8px 4px;
+      margin: 0 -24px 16px;
+      padding: 8px 24px;
     }
     .pill {
       display: inline-block;
@@ -74,11 +141,7 @@
 </head>
 <body>
   <!--#include virtual="/help/en/parts/Header.shtml" -->
-
-  <div id="mBody">
-    <!--#include virtual="AcknowledgementsSidebar.shtml" -->
-
-    <div id="mainContent">
+  <main style="max-width: 860px; margin: 0 auto; padding: 80px 24px 48px;">
       <!-- Page header -->
       <div style="border-bottom: 3px solid #554FA0; padding-bottom: 12px; margin-bottom: 12px;">
         <h1 style="color: #554FA0; font-size: 1.5rem; font-weight: 800; margin: 0 0 6px 0; padding: 0; border: none; line-height: 1.2;">Acknowledgements</h1>
@@ -1667,11 +1730,7 @@
       and make changes to the files that make up a project. More information is available on the
       <a href="https://www.jmri.org/community/visuals/codeswarm.shtml">Code Swarm</a> page.</p>
       </div>
-      <!--#include virtual="/help/en/parts/Footer.shtml" -->
-    </div>
-    <!-- closes #mainContent-->
-  </div>
-  <!-- closes #mBody-->
-  <script src="/js/help.js"></script>
+  </main>
+  <!--#include virtual="/help/en/parts/Footer.shtml" -->
 </body>
 </html>
