@@ -142,9 +142,8 @@ public class HardcopyWriter extends Writer implements Printable {
      *                                               cancelled.
      */
     public HardcopyWriter(Frame frame, String jobname, String fontName, Integer fontStyle, Integer fontsize,
-            double leftmargin, double rightmargin,
-            double topmargin, double bottommargin, boolean isPreview, String printerName, Boolean isLandscape,
-            Boolean isPrintHeader, Attribute sides, Dimension pagesize)
+            double leftmargin, double rightmargin, double topmargin, double bottommargin, boolean isPreview,
+            String printerName, Boolean isLandscape, Boolean isPrintHeader, Attribute sides, Dimension pagesize)
             throws HardcopyWriter.PrintCanceledException {
 
         initalize(frame, jobname, fontName, fontStyle, fontsize, leftmargin, rightmargin, topmargin, bottommargin,
@@ -1038,7 +1037,7 @@ public class HardcopyWriter extends Writer implements Printable {
             record(new DrawString(s, (int) (x0 + (this.width - bounds.getWidth()) / 2), headery));
 
             bounds = headerfont.getStringBounds(time, frc);
-            record(new DrawString(time, (int) (x0 + width - bounds.getWidth()), headery));
+            record(new DrawString(time, (int) (x0 + width - bounds.getWidth() - 1), headery));
 
             // draw a line under the header
             int y = headery + headermetrics.getDescent() + 1;

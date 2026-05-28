@@ -35,7 +35,7 @@ import jmri.util.davidflanagan.HardcopyWriter;
  */
 public class TrainCommon {
 
-    protected static final String TAB = "    "; // NOI18N
+    protected String tab = tabString("", Setup.getManifestTabLength()); // NOI18N
     protected static final String NEW_LINE = "\n"; // NOI18N
     public static final String SPACE = " ";
     public static final String BLANK_LINE = " ";
@@ -46,6 +46,8 @@ public class TrainCommon {
     protected static final String TEXT_COLOR_START = "<FONT color=\"";
     protected static final String TEXT_COLOR_DONE = "\">";
     protected static final String TEXT_COLOR_END = "</FONT>";
+    protected static final String TEXT_BOLD = "<b>";
+    protected static final String TEXT_BOLD_END = "</b>";
 
     // when true a pick up, when false a set out
     protected static final boolean PICKUP = true;
@@ -126,7 +128,7 @@ public class TrainCommon {
             String s = getEngineAttribute(engine, attribute, PICKUP);
             if (!checkStringLength(buf.toString() + s, isManifest)) {
                 addLine(file, buf, Setup.getPickupEngineColor());
-                buf = new StringBuffer(TAB); // new line
+                buf = new StringBuffer(tab); // new line
             }
             buf.append(s);
         }
@@ -163,7 +165,7 @@ public class TrainCommon {
             String s = getEngineAttribute(engine, attribute, !PICKUP);
             if (!checkStringLength(buf.toString() + s, isManifest)) {
                 addLine(file, buf, Setup.getDropEngineColor());
-                buf = new StringBuffer(TAB); // new line
+                buf = new StringBuffer(tab); // new line
             }
             buf.append(s);
         }
@@ -856,7 +858,7 @@ public class TrainCommon {
             String s = getCarAttribute(car, attribute, PICKUP, !LOCAL);
             if (!checkStringLength(buf.toString() + s, isManifest)) {
                 addLine(file, buf, Setup.getPickupColor());
-                buf = new StringBuffer(TAB); // new line
+                buf = new StringBuffer(tab); // new line
             }
             buf.append(s);
         }
@@ -948,7 +950,7 @@ public class TrainCommon {
             String s = getCarAttribute(car, attribute, !PICKUP, isLocal);
             if (!checkStringLength(buf.toString() + s, isManifest)) {
                 addLine(file, buf, isLocal ? Setup.getLocalColor() : Setup.getDropColor());
-                buf = new StringBuffer(TAB); // new line
+                buf = new StringBuffer(tab); // new line
             }
             buf.append(s);
         }
@@ -1729,10 +1731,12 @@ public class TrainCommon {
                         InstanceManager.getDefault(TrainManager.class).getMaxTrainNameLength());
                 return Setup.isPrintHeadersEnabled() ? lastTrainName
                         : TrainManifestHeaderText.getStringHeader_Last_Train() + SPACE + lastTrainName;
-            }
-            // the three utility attributes that don't get printed but need to
-            // be tabbed out
-            else if (attribute.equals(Setup.NO_NUMBER)) {
+            } else if (attribute.equals(Setup.LAST_MOVED)) {
+                // date format: 05/19/2026 07:12:58
+                return padAndTruncateIfNeeded(rs.getLastDate(), RollingStock.DATE_TIME_LENGTH);
+                // the three utility attributes that don't get printed but need to
+                // be tabbed out
+            } else if (attribute.equals(Setup.NO_NUMBER)) {
                 return padAndTruncateIfNeeded("",
                         Control.max_len_string_print_road_number - (UTILITY_CAR_COUNT_FIELD_SIZE + 1));
             } else if (attribute.equals(Setup.NO_ROAD)) {
@@ -2026,6 +2030,9 @@ public class TrainCommon {
             } else if (attribute.equals(Setup.LAST_TRAIN)) {
                 buf.append(padAndTruncateIfNeeded(TrainManifestHeaderText.getStringHeader_Last_Train(),
                         InstanceManager.getDefault(TrainManager.class).getMaxTrainNameLength()) + SPACE);
+            } else if (attribute.equals(Setup.LAST_MOVED)) {
+                buf.append(padAndTruncateIfNeeded(TrainManifestHeaderText.getStringHeader_Last_Moved(),
+                        RollingStock.DATE_TIME_LENGTH) + SPACE);
             } else if (attribute.equals(Setup.TAB)) {
                 buf.append(createTabIfNeeded(Setup.getTab1Length()));
             } else if (attribute.equals(Setup.TAB2)) {
@@ -2315,9 +2322,10 @@ public class TrainCommon {
         }
 
         Integer charsPerLine = null;
-        try (HardcopyWriter writer = new HardcopyWriter(fontName, fontStyle, fontSize, leftmargin, rightmargin, topmargin,
-                bottommargin, orientation.equals(Setup.LANDSCAPE),
-                pageSize)) {
+        try (HardcopyWriter writer =
+                new HardcopyWriter(fontName, fontStyle, fontSize, leftmargin, rightmargin, topmargin,
+                        bottommargin, orientation.equals(Setup.LANDSCAPE),
+                        pageSize)) {
 
             charsPerLine = writer.getCharactersPerLine();
 
@@ -2330,8 +2338,8 @@ public class TrainCommon {
     }
 
     /**
-     * Returns null if standard paper size, otherwise paper dimensions for hand held
-     * or half page in DPI.
+     * Returns null if standard paper size, otherwise paper dimensions for hand
+     * held or half page in DPI.
      * 
      * @param orientation paper size
      * @return null if landscape or portrait
@@ -2373,13 +2381,8 @@ public class TrainCommon {
      * @return false if string length is longer than page width.
      */
     private boolean checkStringLength(String string, boolean isManifest) {
-        // ignore text color controls when determining line length
-        if (string.startsWith(TEXT_COLOR_START) && string.contains(TEXT_COLOR_DONE)) {
-            string = string.substring(string.indexOf(TEXT_COLOR_DONE) + 2);
-        }
-        if (string.contains(TEXT_COLOR_END)) {
-            string = string.substring(0, string.indexOf(TEXT_COLOR_END));
-        }
+        // ignore color and bold controls when determining line length
+        string = getOnlyText(string);
         return string.length() <= getLineLength(isManifest);
     }
 
@@ -2400,7 +2403,7 @@ public class TrainCommon {
             pagesize = new Dimension(206, 720); // 3.25 x 11
         }
         if (orientation.equals(Setup.RECEIPT)) {
-         // page size has been adjusted to account for margins of .2
+            // page size has been adjusted to account for margins of .2
             pagesize = new Dimension(136, 720); // 2.25 x 11 (58mm)
         }
         return pagesize;
@@ -2443,11 +2446,24 @@ public class TrainCommon {
      * @return formated text with color modifiers
      */
     public static String formatColorString(String text, Color color) {
+        return formatColorString(text, color, false);
+    }
+
+    public static String formatColorString(String text, Color color, boolean isBold) {
         String s = text;
         if (!color.equals(Color.black)) {
             s = TEXT_COLOR_START + ColorUtil.colorToColorName(color) + TEXT_COLOR_DONE + text + TEXT_COLOR_END;
         }
+        if (isBold) {
+            s = TEXT_BOLD + s + TEXT_BOLD_END;
+        }
         return s;
+    }
+
+    public static String getOnlyText(String string) {
+        string = getTextColorString(string);
+        string = getTextBoldString(string);
+        return string;
     }
 
     /**
@@ -2456,11 +2472,11 @@ public class TrainCommon {
      * @param string the string with control characters
      * @return pure text
      */
-    public static String getTextColorString(String string) {
+    private static String getTextColorString(String string) {
         String text = string;
         if (string.contains(TEXT_COLOR_START)) {
             text = string.substring(0, string.indexOf(TEXT_COLOR_START)) +
-                    string.substring(string.indexOf(TEXT_COLOR_DONE) + 2);
+                    string.substring(string.indexOf(TEXT_COLOR_DONE) + TEXT_COLOR_DONE.length());
         }
         if (text.contains(TEXT_COLOR_END)) {
             text = text.substring(0, text.indexOf(TEXT_COLOR_END)) +
@@ -2485,6 +2501,23 @@ public class TrainCommon {
 
     public static String getTextColorName(String string) {
         return ColorUtil.colorToColorName(getTextColor(string));
+    }
+
+    public static String getTextBoldString(String string) {
+        String text = string;
+        if (string.contains(TEXT_BOLD)) {
+            text = text.substring(0, text.indexOf(TEXT_BOLD)) +
+                    string.substring(string.indexOf(TEXT_BOLD) + TEXT_BOLD.length());
+        }
+        if (text.contains(TEXT_BOLD_END)) {
+            text = text.substring(0, text.indexOf(TEXT_BOLD_END)) +
+                    string.substring(string.indexOf(TEXT_BOLD_END) + TEXT_BOLD_END.length());
+        }
+        return text;
+    }
+
+    public static boolean isTextBold(String string) {
+        return (string.contains(TEXT_BOLD));
     }
 
     private static final Logger log = LoggerFactory.getLogger(TrainCommon.class);

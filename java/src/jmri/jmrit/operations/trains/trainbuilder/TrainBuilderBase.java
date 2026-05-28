@@ -713,6 +713,8 @@ public class TrainBuilderBase extends TrainCommon {
             if (selected != null) {
                 addLine(FIVE, Bundle.getMessage("buildUserSelectedDeparture", selected.getName(),
                         selected.getLocation().getName()));
+            } else {
+                addLine(FIVE, Bundle.getMessage("buildUserCanceledDeparture"));
             }
             return selected;
         } else if (validTracks.size() == 1) {
@@ -3057,6 +3059,30 @@ public class TrainBuilderBase extends TrainCommon {
             }
             addLine(FIVE, BLANK_LINE);
         }
+    }
+    
+    protected boolean checkRouteLocation(RouteLocation rl) {
+        if (getTrain().isLocationSkipped(rl)) {
+            addLine(ONE,
+                    Bundle.getMessage("buildLocSkipped", rl.getName(), rl.getId(), getTrain().getName()));
+            return false;
+        }
+        if (!rl.isPickUpAllowed() && !rl.isLocalMovesAllowed()) {
+            addLine(ONE,
+                    Bundle.getMessage("buildLocNoPickups", getTrain().getRoute().getName(), rl.getId(), rl.getName()));
+            return false;
+        }
+        // no pick ups from staging unless at the start of the train's route
+        if (rl != getTrain().getTrainDepartsRouteLocation() && rl.getLocation().isStaging()) {
+            addLine(ONE, Bundle.getMessage("buildNoPickupsFromStaging", rl.getName()));
+            return false;
+        }
+        // the next check provides a build report message if there's an
+        // issue with the train direction
+        if (!checkPickUpTrainDirection(rl)) {
+            return false;
+        }
+        return true;
     }
 
     /**

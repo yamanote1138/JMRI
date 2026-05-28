@@ -161,6 +161,7 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
     public static final String PICKUP_COMMENT = Bundle.getMessage("PickUp_Msg");
     public static final String HAZARDOUS = Bundle.getMessage("Hazardous");
     public static final String LAST_TRAIN = Bundle.getMessage("LastTrain");
+    public static final String LAST_MOVED = Bundle.getMessage("LastMoved");
     public static final String BLANK = " "; // blank has be a character or a space
     public static final String TAB = Bundle.getMessage("Tab"); // used to tab out in tabular mode
     public static final String TAB2 = Bundle.getMessage("Tab2");
@@ -187,10 +188,10 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
 
     private static final String[] CAR_ATTRIBUTES = { ROAD, NUMBER, TYPE, LENGTH, WEIGHT, LOAD, LOAD_TYPE, HAZARDOUS,
             COLOR, KERNEL, KERNEL_SIZE, OWNER, DIVISION, TRACK, LOCATION, DESTINATION, DEST_TRACK, FINAL_DEST, FINAL_DEST_TRACK,
-            BLOCKING_ORDER, COMMENT, DROP_COMMENT, PICKUP_COMMENT, RWE, LAST_TRAIN};
+            BLOCKING_ORDER, COMMENT, DROP_COMMENT, PICKUP_COMMENT, RWE, LAST_TRAIN, LAST_MOVED};
     
     private static final String[] ENGINE_ATTRIBUTES = {ROAD, NUMBER, TYPE, MODEL, LENGTH, WEIGHT, HP, CONSIST, OWNER,
-            TRACK, LOCATION, DESTINATION, COMMENT, DCC_ADDRESS, LAST_TRAIN};
+            TRACK, LOCATION, DESTINATION, COMMENT, DCC_ADDRESS, LAST_TRAIN, LAST_MOVED};
     /*
      * The print Manifest and switch list user selectable options are stored in the
      * xml file using the English translations.
@@ -198,7 +199,7 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
     private static final String[] KEYS = {"Road", "Number", "Type", "Model", "Length", "Weight", "Load", "Load_Type",
             "HP", "Color", "Track", "Destination", "Dest&Track", "Final_Dest", "FD&Track", "Location", "Consist",
             "DCC_Address", "Kernel", "Kernel_Size", "Owner", "Division", "Blocking_Order", "RWE", "Comment",
-            "SetOut_Msg", "PickUp_Msg", "Hazardous", "LastTrain", "Tab", "Tab2", "Tab3"};
+            "SetOut_Msg", "PickUp_Msg", "Hazardous", "LastTrain", "LastMoved", "Tab", "Tab2", "Tab3"};
 
     private int scale = HO_SCALE; // Default scale
     private int ratio = HO_RATIO;
@@ -270,6 +271,7 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
     private int tab1CharLength = Control.max_len_string_attibute;
     private int tab2CharLength = 6; // arbitrary lengths
     private int tab3CharLength = 8;
+    private int manifestTabLength = 4; // plus one space
 
     private String manifestFormat = STANDARD_FORMAT;
     private boolean manifestEditorEnabled = false; // when true use text editor to view build report
@@ -1243,6 +1245,14 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
     public static void setTab3length(int length) {
         getDefault().tab3CharLength = length;
     }
+    
+    public static int getManifestTabLength() {
+        return getDefault().manifestTabLength;
+    }
+
+    public static void setManifestTablength(int length) {
+        getDefault().manifestTabLength = length;
+    }
 
     public static String getManifestFormat() {
         return getDefault().manifestFormat;
@@ -2113,6 +2123,7 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
         values.setAttribute(Xml.LENGTH, Integer.toString(getTab1Length()));
         values.setAttribute(Xml.TAB2_LENGTH, Integer.toString(getTab2Length()));
         values.setAttribute(Xml.TAB3_LENGTH, Integer.toString(getTab3Length()));
+        values.setAttribute(Xml.MANIFEST_TAB_LENGTH, Integer.toString(getManifestTabLength()));
 
         e.addContent(values = new Element(Xml.MANIFEST));
         values.setAttribute(Xml.PRINT_LOC_COMMENTS, isPrintLocationCommentsEnabled() ? Xml.TRUE : Xml.FALSE);
@@ -2727,6 +2738,15 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
                     setTab3length(Integer.parseInt(length));
                 } catch (NumberFormatException ee) {
                     log.error("Tab 3 length ({}) isn't a valid number", a.getValue());
+                }
+            }
+            if ((a = operations.getChild(Xml.TAB).getAttribute(Xml.MANIFEST_TAB_LENGTH)) != null) {
+                String length = a.getValue();
+                log.debug("Manifest tab length: {}", length);
+                try {
+                    setManifestTablength(Integer.parseInt(length));
+                } catch (NumberFormatException ee) {
+                    log.error("Manifest tab length ({}) isn't a valid number", a.getValue());
                 }
             }
         }
