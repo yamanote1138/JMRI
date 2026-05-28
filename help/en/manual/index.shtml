@@ -222,128 +222,49 @@
         </div>
       </div>
 
-      <table>
-        <tbody>
-          <tr>
-            <td>Version:<br></td>
-            <td>Applications with Online Manual:<br></td>
-            <td><br>
-            </td>
-          </tr>
+      <p class="section-head">Current release — v4.x / v5.x</p>
+      <div class="manual-grid">
+        <a class="manual-card" href="../html/apps/DecoderPro/index.shtml">
+          <div class="manual-card-name">DecoderPro&reg;</div>
+          <div class="manual-card-ver">v4.x / v5.x &mdash; current</div>
+        </a>
+        <a class="manual-card" href="../html/apps/PanelPro/index.shtml">
+          <div class="manual-card-name">PanelPro&trade;</div>
+          <div class="manual-card-ver">v4.x / v5.x &mdash; current</div>
+        </a>
+        <a class="manual-card" href="../package/jmri/jmrit/operations/Operations.shtml">
+          <div class="manual-card-name">OperationsPro&trade;</div>
+          <div class="manual-card-ver">v4.x / v5.x &mdash; current</div>
+        </a>
+        <a class="manual-card" href="../package/jmri/jmrit/dispatcher/Dispatcher.shtml">
+          <div class="manual-card-name">DispatcherPro&trade;</div>
+          <div class="manual-card-ver">v4.x / v5.x &mdash; current</div>
+        </a>
+        <a class="manual-card" href="../html/setup/index.shtml">
+          <div class="manual-card-name">General Set Up</div>
+          <div class="manual-card-ver">v4.x / v5.x &mdash; current</div>
+        </a>
+      </div>
 
-          <tr>
-            <td><span style="font-weight: bold;">JMRI&reg; current</span>
-            </td>
-            <td style="font-weight: bold;">
-              <a href="../html/apps/DecoderPro/index.shtml">DecoderPro v4.x/5.x</a>
-            </td>
-            <td>
-            </td>
-          </tr>
+      <p class="section-head">Legacy versions</p>
+      <div class="legacy-group">
+        <div class="legacy-ver">v3.10</div>
+        <div class="legacy-links">
+          <a class="legacy-link" href="DecoderPro3/index.shtml">DecoderPro3 v3.6</a>
+          <a class="legacy-link" href="DecoderPro/index.shtml">DecoderPro v3.6</a>
+          <a class="legacy-link" href="JMRI_OPS_UsersGuide/index.shtml">OperationsPro v3.6&ndash;3.10</a>
+        </div>
+      </div>
+      <div class="legacy-group">
+        <div class="legacy-ver">v2.14</div>
+        <div class="legacy-links">
+          <a class="legacy-link" href="https://jmri.org/manual/JMRI_2-14_manual/index.shtml">JMRI v2.14.1</a>
+          <a class="legacy-link" href="https://jmri.org/manual/DP3_2-14_manual/index.shtml">DecoderPro 3 v2.14</a>
+          <a class="legacy-link" href="https://jmri.org/manual/pdf/DP3_Man_2_14.pdf">PDF v2.14 (6.7MB) &darr;</a>
+        </div>
+      </div>
 
-          <tr>
-            <td>
-            </td>
-            <td style="font-weight: bold;">
-              <a href="../html/apps/PanelPro/index.shtml">PanelPro&trade; v4.x/v5.x</a>
-            </td>
-            <td>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-            </td>
-            <td style="font-weight: bold;">
-              <a href="../package/jmri/jmrit/operations/Operations.shtml">OperationsPro&trade; v4.x/v5.x</a>
-            </td>
-            <td>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-            </td>
-            <td style="font-weight: bold;">
-              <a href="../package/jmri/jmrit/dispatcher/Dispatcher.shtml">DispatcherPro&trade; v4.x/v5.x</a>
-            </td>
-            <td>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-            </td>
-            <td style="font-weight: bold;">
-              <a href="../html/setup/index.shtml">General Set Up v4.x/v5.x</a><br>
-            </td>
-            <td>
-            </td>
-          </tr>
-
-          <tr>
-            <td><span style="font-weight: bold;">JMRI&reg; v3.10</span>
-            </td>
-            <td style="font-weight: bold;">
-              <a href="DecoderPro3/index.shtml">DecoderPro3 v3.6</a>
-            </td>
-            <td><br>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-            </td>
-            <td style="font-weight: bold;">
-              <a href="DecoderPro/index.shtml">DecoderPro&reg; v3.6</a>
-            </td>
-            <td>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-            </td>
-            <td style="font-weight: bold;">
-              <a href="JMRI_OPS_UsersGuide/index.shtml">OperationsPro&trade; v3.6-3.10</a>
-            </td>
-            <td>
-            </td>
-          </tr>
-
-          <tr>
-            <td><strong>JMRI&reg; v2.14</strong>
-            </td>
-            <td>
-            </td>
-            <td>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-            </td>
-            <td><strong><a href="https://jmri.org/manual/JMRI_2-14_manual/index.shtml">JMRI&reg;
-            v2.14.1</a></strong>
-            </td>
-            <td>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-            </td>
-            <td><strong><a href="https://jmri.org/manual/DP3_2-14_manual/index.shtml">DecoderPro 3
-            v2.14</a></strong>
-            </td>
-            <td><strong><a href="https://jmri.org/manual/pdf/DP3_Man_2_14.pdf" target=
-            "_blank">Printable PDF (6.7MB)</a></strong>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h2>JMRI&reg; Applications</h2>
+      <p class="section-head">JMRI&reg; Applications</p>
 
       <p><strong>JMRI is a Java-based cross-platform program suite for model
       railroaders.</strong><br>
