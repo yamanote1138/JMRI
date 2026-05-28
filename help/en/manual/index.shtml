@@ -205,11 +205,9 @@
 
 <body>
   <!--#include virtual="/help/en/parts/Header.shtml" -->
-
-  <div id="mBody">
+  <div style="display: flex; padding-top: 64px; min-height: calc(100vh - 64px);">
     <!--#include virtual="Sidebar.shtml" -->
-
-    <div id="mainContent">
+    <main style="flex: 1; min-width: 0; padding: 32px 24px 48px;">
       <h1 id="Top">JMRI&reg; Manuals</h1>
 
       <table>
@@ -408,10 +406,7 @@
       <p>More on our <a href="/java/index.shtml">Java installer page</a>.</p>
 
       <!--#include virtual="/help/en/parts/Footer.shtml" -->
-    </div>
-    <!-- closes #mainContent-->
+    </main>
   </div>
-  <!-- closes #mBody-->
-  <script src="/js/help.js"></script>
 </body>
 </html>
