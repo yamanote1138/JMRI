@@ -56,6 +56,7 @@ public class LoadAndStoreTestBase {
     }
 
     private SaveType saveType = SaveType.Config;
+    private java.util.TimeZone originalTimeZone;
     private boolean guiOnly = false;
 
     /**
@@ -378,6 +379,9 @@ public class LoadAndStoreTestBase {
 
     @BeforeEach
     public void setUp(@TempDir java.io.File tempDir) throws IOException  {
+        // stored clock times include the zone name, so use the one the loadref files were made with
+        originalTimeZone = java.util.TimeZone.getDefault();
+        java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("Etc/GMT"));
         JUnitUtil.setUp();
         JUnitUtil.resetProfileManager( new jmri.profile.NullProfile( tempDir));
         JUnitUtil.resetInstanceManager();
@@ -420,6 +424,8 @@ public class LoadAndStoreTestBase {
         JUnitUtil.clearSignalMastLogic(); // none left to act in the next test, see #7898
         JUnitUtil.tearDown();
         System.setProperty("jmri.test.no-dialogs", "false");
+        java.util.TimeZone.setDefault(originalTimeZone);
+        originalTimeZone = null;
     }
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LoadAndStoreTestBase.class);

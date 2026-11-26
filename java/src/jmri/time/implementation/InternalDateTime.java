@@ -183,7 +183,7 @@ public class InternalDateTime extends AbstractTimeProvider
         synchronized(_lock) {
             oldRunning = _isRunning;
             if (!_isTimerTaskStarted && !_isLockedFromRunning) {
-                _time = ZonedDateTime.now();
+                // _time starts as now, so keep any time set before the first start
                 resetLast();
                 // tick on the GUI thread, as SimpleTimebase does, so listeners and panels update there
                 _scheduledTask = TimerUtil.scheduleOnGUIThread(_timerTask, _100_MILLISECONDS, _100_MILLISECONDS);
@@ -221,7 +221,8 @@ public class InternalDateTime extends AbstractTimeProvider
         ZonedDateTime oldTime;
         synchronized(_lock) {
             oldTime = this._time;
-            _time = ZonedDateTime.of(_time.toLocalDate(), time, ZoneOffset.UTC);
+            // keep the clock's own zone, as the other setters do
+            _time = ZonedDateTime.of(_time.toLocalDate(), time, _time.getZone());
             resetLast();
         }
         timeIsUpdated(oldTime);

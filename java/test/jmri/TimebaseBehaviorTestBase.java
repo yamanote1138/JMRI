@@ -36,7 +36,7 @@ public abstract class TimebaseBehaviorTestBase {
     // stands in for a hardware clock and records what the Timebase tells it
     protected static class RecordingClockControl extends DefaultClockControl {
 
-        final List<String> calls = Collections.synchronizedList(new ArrayList<>());
+        public final List<String> calls = Collections.synchronizedList(new ArrayList<>());
 
         @Override
         public String getHardwareClockName() {

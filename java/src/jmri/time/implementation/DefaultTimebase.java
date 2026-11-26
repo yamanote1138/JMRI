@@ -1,6 +1,5 @@
 package jmri.time.implementation;
 
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -58,12 +57,13 @@ public class DefaultTimebase extends AbstractTimebase {
     private java.text.SimpleDateFormat timeStorageFormat = null;
 
     private final PropertyChangeListener timeProviderListener = this::timeProviderChanged;
+    // one object, so dispose() removes the same listener it added
+    private final PropertyChangeListener clockSensorListener = this::clockSensorChanged;
     private final MainTimeProviderHandler timeProviderHandler;
     private int oldMinutes = -1;
     private boolean settingRate = false; // the rate setters fire the rate event themselves, as SimpleTimebase does
     private Date oldDate = null;
 
-    private javax.swing.Timer timer = null;
 
 
     public DefaultTimebase(InternalSystemConnectionMemo memo) {
@@ -94,7 +94,7 @@ public class DefaultTimebase extends AbstractTimebase {
             clockSensor = InstanceManager.sensorManagerInstance().provideSensor(memo.getSystemPrefix()+"SCLOCKRUNNING");
             // match the clock, which the time provider manager starts and a panel file may stop
             clockSensor.setKnownState(getRun() ? Sensor.ACTIVE : Sensor.INACTIVE);
-            clockSensor.addPropertyChangeListener(this::clockSensorChanged);
+            clockSensor.addPropertyChangeListener(clockSensorListener);
         } catch (JmriException e) {
             log.warn("Exception setting CLOCKRUNNING sensor", e);
         }
@@ -114,7 +114,10 @@ public class DefaultTimebase extends AbstractTimebase {
 
     @Override
     public void setTime(Date d) {
-        super.setTime(d);
+        // don't send the hardware a time the clock itself didn't take
+        if (!setTimeOnClock(d)) {
+            return;
+        }
         if (synchronizeWithHardware && InstanceManager.getDefault(ClockControl.class) != hardwareTimeSource) {
             // send new time to all hardware clocks, except the hardware time source if there is one
             InstanceManager.getDefault(ClockControl.class).setTime(d);
@@ -122,15 +125,11 @@ public class DefaultTimebase extends AbstractTimebase {
     }
 
     @Override
-    public void setTime(java.time.Instant i) {
-        // same as SimpleTimebase; the inherited version drops the date and treats the time as UTC
-        setTime(Date.from(i));
-    }
-
-    @Override
     public void userSetTime(Date d) {
         // this call only results from user changing fast clock time in Setup Fast Clock
-        super.setTime(d);
+        if (!setTimeOnClock(d)) {
+            return;
+        }
         if (synchronizeWithHardware) {
             // send new time to all hardware clocks, including the hardware time source if there is one
             InstanceManager.getDefault(ClockControl.class).setTime(d);
@@ -144,13 +143,19 @@ public class DefaultTimebase extends AbstractTimebase {
     public void setRun(boolean run) {
         boolean wasRunning = getRun();
         super.setRun(run);
-        if (run && !wasRunning) {
+        // compare with the clock, since super.setRun skips a clock that can't start or stop
+        boolean isRunning = getRun();
+        if (isRunning != run) {
+            // the clock couldn't change, so put the run sensor back to match it
+            updateClockSensor();
+        }
+        if (isRunning && !wasRunning) {
             if (synchronizeWithHardware) {
                 InstanceManager.getDefault(ClockControl.class).startHardwareClock(getTime());
             } else if (!internalMaster && hardwareTimeSource != null) {
                 hardwareTimeSource.startHardwareClock(getTime());
             }
-        } else if (!run && wasRunning) {
+        } else if (!isRunning && wasRunning) {
             if (synchronizeWithHardware) {
                 InstanceManager.getDefault(ClockControl.class).stopHardwareClock();
             } else if (!internalMaster && hardwareTimeSource != null) {
@@ -355,7 +360,7 @@ public class DefaultTimebase extends AbstractTimebase {
 
     @Override
     public void setStartSetTime(boolean set, Date time) {
-        if (startSetTime!=set || startTime!=new Date(time.getTime())) {
+        if (startSetTime!=set || !startTime.equals(time)) {
             startSetTime = set;
             startTime = new Date(time.getTime());
             firePropertyChange("config", 0, 1); // inform listeners that the clock config has changed
@@ -579,24 +584,12 @@ public class DefaultTimebase extends AbstractTimebase {
     }
 
     /**
-     * Stops Timer.
      * {@inheritDoc}
      */
     @Override
     public void dispose() {
-        if (timer != null) {
-            // end this timer
-            timer.setRepeats(false); // just in case
-            timer.stop();
-
-            ActionListener[] listeners = timer.getListeners(ActionListener.class);
-            for (ActionListener listener : listeners) {
-                timer.removeActionListener(listener);
-            }
-            timer = null;
-        }
         if ( clockSensor != null ) {
-            clockSensor.removePropertyChangeListener(this::clockSensorChanged);
+            clockSensor.removePropertyChangeListener(clockSensorListener);
         }
         timeProviderHandler.removePropertyChangeListener(timeProviderListener);
         super.dispose(); // remove standard property change listeners

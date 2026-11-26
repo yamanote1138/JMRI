@@ -19,6 +19,10 @@ import jmri.time.*;
  */
 public abstract class AbstractTimebase extends AbstractNamedBean implements Timebase {
 
+    // the same limits as SimpleTimebase
+    private static final double MINIMUM_RATE = 0.1;
+    private static final double MAXIMUM_RATE = 100;
+
     public AbstractTimebase(String sysName) {
         super(sysName);
     }
@@ -42,29 +46,25 @@ public abstract class AbstractTimebase extends AbstractNamedBean implements Time
 
     @Override
     public void setTime(Date d) {
+        setTimeOnClock(d);
+    }
+
+    // sets the current clock's time; returns false if it can't set its time now
+    protected boolean setTimeOnClock(Date d) {
         TimeProvider tp = InstanceManager.getDefault(TimeProviderManager.class)
                 .getCurrentTimeProvider();
-        if (tp instanceof TimeSetter) {
-            TimeSetter ts = (TimeSetter)tp;
-            ts.setDateTime(convertToZonedDateTime(d));
-        } else {
-            throw new UnsupportedOperationException("The current TimeProvider is not a TimeSetter: "
-                    + (tp != null ? tp.getClass().getName() : null));
+        // setTime declares no exception and SimpleTimebase never threw here, so warn and skip
+        if (!(tp instanceof TimeSetter) || !((TimeSetter)tp).canSetDateTime()) {
+            log.warn("{} can't set its time now, ignoring", tp != null ? tp.getDisplayName() : null);
+            return false;
         }
+        ((TimeSetter)tp).setDateTime(convertToZonedDateTime(d));
+        return true;
     }
 
     @Override
     public void setTime(Instant i) {
-        TimeProvider tp = InstanceManager.getDefault(TimeProviderManager.class)
-                .getCurrentTimeProvider();
-        if (tp instanceof TimeSetter) {
-            TimeSetter ts = (TimeSetter)tp;
-            LocalTime time = LocalTime.ofInstant(i, ZoneId.systemDefault());
-            ts.setTime(time);
-        } else {
-            throw new UnsupportedOperationException("The current TimeProvider is not a TimeSetter: "
-                    + (tp != null ? tp.getClass().getName() : null));
-        }
+        setTime(Date.from(i));
     }
 
     @Override
@@ -83,20 +83,18 @@ public abstract class AbstractTimebase extends AbstractNamedBean implements Time
     public void setRun(boolean y) {
         TimeProvider tp = InstanceManager.getDefault(TimeProviderManager.class)
                 .getCurrentTimeProvider();
-        if (tp instanceof StartStopTimeProvider) {
-            StartStopTimeProvider sstp = (StartStopTimeProvider)tp;
-            if (sstp.canStartAndStop()) {
-                if (y) {
-                    sstp.start();
-                } else {
-                    sstp.stop();
-                }
-            } else {
-                throw new UnsupportedOperationException("The current TimeProvider can not start/stop time");
+        // setRun declares no exception and SimpleTimebase never threw here, so warn and skip
+        if (!(tp instanceof StartStopTimeProvider) || !((StartStopTimeProvider)tp).canStartAndStop()) {
+            // only warn about a real change, not e.g. a panel file asking a running computer clock to run
+            if (tp == null || tp.isRunning() != y) {
+                log.warn("{} can't start or stop now, ignoring", tp != null ? tp.getDisplayName() : null);
             }
+            return;
+        }
+        if (y) {
+            ((StartStopTimeProvider)tp).start();
         } else {
-            throw new UnsupportedOperationException("The current TimeProvider is not a StartStopTimeProvider: "
-                    + (tp != null ? tp.getClass().getName() : null));
+            ((StartStopTimeProvider)tp).stop();
         }
     }
 
@@ -108,53 +106,32 @@ public abstract class AbstractTimebase extends AbstractNamedBean implements Time
 
     @Override
     public void setRate(double factor) throws TimebaseRateException {
-        TimeProvider tp = InstanceManager.getDefault(TimeProviderManager.class)
-                .getCurrentTimeProvider();
-        if (tp instanceof RateSetter && tp instanceof CanSetRate && ((CanSetRate)tp).canSetRate()) {
-            // the clock's own setRate fires the rate event; setting its Rate object directly doesn't
-            ((RateSetter)tp).setRate(factor);
-        } else if (tp instanceof CanSetRate) {
-            if (tp.getRate() instanceof RateSetter) {
-                CanSetRate csr = (CanSetRate)tp;
-                RateSetter rs = (RateSetter)tp.getRate();
-                if (csr.canSetRate()) {
-                    rs.setRate(factor);
-                } else {
-                    throw new UnsupportedOperationException("The current TimeProvider can not start/stop time");
-                }
-            } else {
-                throw new UnsupportedOperationException("The current TimeProvider rate is not a RateSetter: "
-                        + (tp.getRate() != null ? tp.getRate().getClass().getName() : null));
-            }
-        } else {
-            throw new UnsupportedOperationException("The current TimeProvider is not a CanSetRate: "
-                    + (tp != null ? tp.getClass().getName() : null));
-        }
+        setRateOnClock(factor);
     }
 
     @Override
     public void userSetRate(double factor) throws TimebaseRateException {
+        setRateOnClock(factor);
+    }
+
+    // check, then set: say no with the TimebaseRateException callers already handle
+    private void setRateOnClock(double factor) throws TimebaseRateException {
+        if (factor < MINIMUM_RATE || factor > MAXIMUM_RATE) {
+            log.error("rate of {} is out of reasonable range {} - {}", factor, MINIMUM_RATE, MAXIMUM_RATE);
+            throw new TimebaseRateException(Bundle.getMessage("IncorrectRate", factor, MINIMUM_RATE, MAXIMUM_RATE));
+        }
         TimeProvider tp = InstanceManager.getDefault(TimeProviderManager.class)
                 .getCurrentTimeProvider();
-        if (tp instanceof RateSetter && tp instanceof CanSetRate && ((CanSetRate)tp).canSetRate()) {
+        if (!(tp instanceof CanSetRate) || !((CanSetRate)tp).canSetRate()) {
+            throw new TimebaseRateException(Bundle.getMessage("ClockCantSetRate", tp != null ? tp.getDisplayName() : null));
+        }
+        if (tp instanceof RateSetter) {
             // the clock's own setRate fires the rate event; setting its Rate object directly doesn't
             ((RateSetter)tp).setRate(factor);
-        } else if (tp instanceof CanSetRate) {
-            if (tp.getRate() instanceof RateSetter) {
-                CanSetRate csr = (CanSetRate)tp;
-                RateSetter rs = (RateSetter)tp.getRate();
-                if (csr.canSetRate()) {
-                    rs.setRate(factor);
-                } else {
-                    throw new UnsupportedOperationException("The current TimeProvider can not start/stop time");
-                }
-            } else {
-                throw new UnsupportedOperationException("The current TimeProvider rate is not a RateSetter: "
-                        + (tp.getRate() != null ? tp.getRate().getClass().getName() : null));
-            }
+        } else if (tp.getRate() instanceof RateSetter) {
+            ((RateSetter)tp.getRate()).setRate(factor);
         } else {
-            throw new UnsupportedOperationException("The current TimeProvider is not a CanSetRate: "
-                    + (tp != null ? tp.getClass().getName() : null));
+            throw new TimebaseRateException(Bundle.getMessage("ClockCantSetRate", tp.getDisplayName()));
         }
     }
 
@@ -171,6 +148,6 @@ public abstract class AbstractTimebase extends AbstractNamedBean implements Time
     }
 
 
-//    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AbstractTimebase.class);
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AbstractTimebase.class);
 
 }
