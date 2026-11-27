@@ -61,7 +61,6 @@ public class DefaultTimebase extends AbstractTimebase {
     private final PropertyChangeListener clockSensorListener = this::clockSensorChanged;
     private final MainTimeProviderHandler timeProviderHandler;
     private int oldMinutes = -1;
-    private boolean settingRate = false; // the rate setters fire the rate event themselves, as SimpleTimebase does
     private Date oldDate = null;
 
 
@@ -167,12 +166,7 @@ public class DefaultTimebase extends AbstractTimebase {
     @Override
     public void setRate(double factor) throws TimebaseRateException {
         double oldFactor = mFactor;
-        settingRate = true;
-        try {
-            super.setRate(factor);
-        } finally {
-            settingRate = false;
-        }
+        super.setRate(factor);
         // initializeHardwareClock() sends these, so keep them current as SimpleTimebase does
         mFactor = factor;
         if (internalMaster || notInitialized) {
@@ -194,12 +188,7 @@ public class DefaultTimebase extends AbstractTimebase {
     public void userSetRate(double factor) throws TimebaseRateException {
         // this call is used when user changes fast clock rate either in Setup Fast Clock or via a ClockControl
         double oldFactor = hardwareFactor;
-        settingRate = true;
-        try {
-            super.userSetRate(factor);
-        } finally {
-            settingRate = false;
-        }
+        super.userSetRate(factor);
         mFactor = factor;
         hardwareFactor = factor;
         if (synchronizeWithHardware) {
@@ -497,10 +486,7 @@ public class DefaultTimebase extends AbstractTimebase {
                 minuteChanged();
                 break;
             case TimeProvider.PROPERTY_CHANGE_RATE:
-                if (settingRate) {
-                    // the setter fires it after the hardware is updated
-                    break;
-                }
+                // only a change made on the clock itself; the rate setters here fire their own event
                 if (factorMemory != null) {
                     factorMemory.setValue(userGetRate());
                 }

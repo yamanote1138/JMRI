@@ -115,6 +115,7 @@ public abstract class AbstractTimebase extends AbstractNamedBean implements Time
     }
 
     // check, then set: say no with the TimebaseRateException callers already handle
+    // no rate event here; the Timebase fires its own after the hardware clocks are updated
     private void setRateOnClock(double factor) throws TimebaseRateException {
         if (factor < MINIMUM_RATE || factor > MAXIMUM_RATE) {
             log.error("rate of {} is out of reasonable range {} - {}", factor, MINIMUM_RATE, MAXIMUM_RATE);
@@ -122,17 +123,10 @@ public abstract class AbstractTimebase extends AbstractNamedBean implements Time
         }
         TimeProvider tp = InstanceManager.getDefault(TimeProviderManager.class)
                 .getCurrentTimeProvider();
-        if (!(tp instanceof CanSetRate) || !((CanSetRate)tp).canSetRate()) {
+        if (!(tp instanceof RateSetter) || !((RateSetter)tp).canSetRate()) {
             throw new TimebaseRateException(Bundle.getMessage("ClockCantSetRate", tp != null ? tp.getDisplayName() : null));
         }
-        if (tp instanceof RateSetter) {
-            // the clock's own setRate fires the rate event; setting its Rate object directly doesn't
-            ((RateSetter)tp).setRate(factor);
-        } else if (tp.getRate() instanceof RateSetter) {
-            ((RateSetter)tp.getRate()).setRate(factor);
-        } else {
-            throw new TimebaseRateException(Bundle.getMessage("ClockCantSetRate", tp.getDisplayName()));
-        }
+        ((RateSetter)tp).setRateInternal(factor);
     }
 
     @Override
